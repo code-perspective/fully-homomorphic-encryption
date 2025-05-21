@@ -40,7 +40,7 @@ def decrypt_int(
 
 
 def run_hello_world() -> None:
-  """Runs the and_gate benchmark."""
+  """Runs the hello world program."""
 
   int_size = 8
   msg_a = 5
@@ -55,7 +55,7 @@ def run_hello_world() -> None:
   ciphertext_a = encrypt_int(msg_a, 8, lwe_rng, cks)
 
   # Calling function once before profiling it so compile-time doesn't get
-  # included in timing metircs and xprof.
+  # included in timing metircs.
   ciphertext_c = hello_world_fhe_lib.main(
       ciphertext_a, sks, boolean_params
   )
