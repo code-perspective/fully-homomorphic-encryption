@@ -1,12 +1,4 @@
-r"""An experimental file to get an xprof link for running a simple FHE ML program.
-
-It can be launched via XManager. Use the following command:
-
-google_xmanager launch "$(pwd)/privacy/private_computing/fhe/jaxite/xmanager/launcher.py" -- \
---platform=ghostlite_pod \
---topology=2x2 \
---xm_resource_alloc="group:core-dynamic/pss-shared-data-resources-gqm-acl" \
---build_target_path='//experimental/phazon/fhe_on_cloud/hello_world:hello_world_fhe_xprof.par'
+r"""Run a simple FHE ML program.
 """
 
 import timeit
