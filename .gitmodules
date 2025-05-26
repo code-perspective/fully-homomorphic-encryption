@@ -1,0 +1,3 @@
+[submodule "fpga_demos/hello-fpga"]
+	path = fpga_demos/hello-fpga
+	url = https://github.com/belfortlabs/hello-fpga
