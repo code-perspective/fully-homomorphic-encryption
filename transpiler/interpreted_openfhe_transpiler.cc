@@ -86,7 +86,7 @@ $2 {
 
   // Serialize the metadata, removing the trailing null.
   std::string metadata_text;
-  XLS_CHECK(
+  CHECK(
       google::protobuf::TextFormat::PrintToString(metadata, &metadata_text));
 
   return absl::Substitute(kSourceTemplate, xls::GetPackage(*function).DumpIr(),

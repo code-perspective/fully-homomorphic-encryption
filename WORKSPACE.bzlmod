@@ -7,6 +7,7 @@ load(
     "new_git_repository",
 )
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
 
 # provides the `license` rule, which is required because gentbl_rule implicitly
 # depends upon the target '//:license'.
@@ -31,7 +32,6 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
 bazel_skylib_workspace()
 
-# Install TFHE
 http_archive(
     name = "rules_foreign_cc",
     sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
@@ -51,6 +51,81 @@ http_archive(
     url = "https://github.com/nlohmann/json/archive/refs/tags/v3.11.2.tar.gz",
 )
 
+
+
+
+# Install XLS and its transitive dependencies.
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "rules_python",
+    sha256 = "ca77768989a7f311186a29747e3e95c936a41dffac779aff6b443db22290d913",
+    strip_prefix = "rules_python-0.36.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.36.0/rules_python-0.36.0.tar.gz",
+)
+### Protobuf setup section
+# Note that protobuf setup is very complicated and needs its own carve-out in WORKSPACE.
+PROTOBUF_VERSION = "30.1"
+PROTOBUF_HASH = "008a11cc56f9b96679b4c285fd05f46d317d685be3ab524b2a310be0fbad987e"
+http_archive(
+    name = "com_google_protobuf",
+    sha256 = PROTOBUF_HASH,
+    strip_prefix = "protobuf-" + PROTOBUF_VERSION,
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-{0}.tar.gz".format(PROTOBUF_VERSION)],
+)
+
+# note that the following line is what is minimally required from protobuf for the java rules
+# consider using the protobuf_deps() public API from @com_google_protobuf//:protobuf_deps.bzl
+load("@com_google_protobuf//bazel/private:proto_bazel_features.bzl", "proto_bazel_features")  # buildifier: disable=bzl-visibility
+
+proto_bazel_features(name = "proto_bazel_features")
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+http_archive(
+    name = "com_google_xls",
+    sha256 = "d671f2f6622517f04b42e7ab8f6bc42b5ecc37f0ae25473f0335d23f829f7a9f",
+    strip_prefix = "xls-1f56aafdb5fd0a4310f7239cf54f1e5815d319f7",
+    url = "https://github.com/google/xls/archive/1f56aafdb5fd0a4310f7239cf54f1e5815d319f7.tar.gz",
+    patch_args = ["-p1"],
+    patches = ["//patches:xls.diff", "//patches:xls_visibility.diff", "//patches:xls_repo.diff"],
+)
+
+load("@com_google_xls//dependency_support:load_external.bzl", "load_external_repositories")
+
+load_external_repositories()
+
+load(
+  "@rules_python//python:repositories.bzl",
+  "py_repositories",
+  "python_register_toolchains",
+)
+
+# Must be called before using anything from rules_python.
+# https://github.com/bazelbuild/rules_python/issues/1560#issuecomment-1815118394
+py_repositories()
+
+python_register_toolchains(
+    name = "project_python",
+    python_version = "3.11",
+)
+
+load("@com_google_xls//dependency_support:initialize_external.bzl", "initialize_external_repositories")
+
+initialize_external_repositories()
+
+load("@xls_pip_deps//:requirements.bzl", xls_pip_install_deps = "install_deps")
+
+xls_pip_install_deps()
+
+
+
+
+
+
+
+# Install TFHE
+
 http_archive(
     name = "tfhe",
     build_file = "//patches:tfhe.BUILD",
@@ -58,6 +133,7 @@ http_archive(
     strip_prefix = "tfhe-a085efe91314f994285fcb06ab8bdae3d55e4505",
     url = "https://github.com/tfhe/tfhe/archive/a085efe91314f994285fcb06ab8bdae3d55e4505.tar.gz",
 )
+
 
 # Install OpenFHE
 # git_repository is required because the git project uses submodules,
@@ -72,99 +148,6 @@ new_git_repository(
     remote = "https://github.com/openfheorg/openfhe-development.git",
     shallow_since = "1667502783 +0200",
 )
-
-# ERROR: An error occurred during the fetch of repository 'xls_pip_deps':
-# AttributeError: module 'pkgutil' has no attribute 'ImpImporter'. Did you mean: 'zipimporter'?
-# Solution: https://github.com/googleapis/gapic-generator-python/issues/1824
-_rules_python_version = "0.24.0" 
-_rules_python_sha256 = "0a8003b044294d7840ac7d9d73eef05d6ceb682d7516781a4ec62eeb34702578" 
-http_archive( 
-    name = "rules_python", 
-    sha256 = _rules_python_sha256, 
-    strip_prefix = "rules_python-{}".format(_rules_python_version), 
-    url = "https://github.com/bazelbuild/rules_python/archive/{}.tar.gz".format(_rules_python_version), 
-)
-
-# Install XLS and its transitive dependencies.
-http_archive(
-    name = "com_google_xls",
-    sha256 = "da8807270d854701f51b7171eed3a70b2f64e5a39ad4ee940eec0ea6eda33e77",
-    strip_prefix = "xls-8dee07ff6374302b86cdd21b89df4c476c23288a",
-    url = "https://github.com/google/xls/archive/8dee07ff6374302b86cdd21b89df4c476c23288a.tar.gz",
-)
-
-# Used by xlscc.
-http_archive(
-    name = "com_github_hlslibs_ac_types",
-    build_file = "@com_google_xls//dependency_support/com_github_hlslibs_ac_types:bundled.BUILD.bazel",
-    sha256 = "7ab5e2ee4c675ef6895fdd816c32349b3070dc8211b7d412242c66d0c6e8edca",
-    strip_prefix = "ac_types-57d89634cb5034a241754f8f5347803213dabfca",
-    urls = ["https://github.com/hlslibs/ac_types/archive/57d89634cb5034a241754f8f5347803213dabfca.tar.gz"],
-)
-
-# Toolchain to install LLVM, a requirements for XLS
-http_archive(
-    name = "com_grail_bazel_toolchain",
-    sha256 = "06e1421091f153029c070f1ae364f8cb5a61dab20ede97a844a0f7bfcec632a4",
-    strip_prefix = "bazel-toolchain-0.8",
-    urls = [
-        "https://github.com/grailbio/bazel-toolchain/archive/refs/tags/0.8.zip",
-    ],
-)
-
-load("@com_grail_bazel_toolchain//toolchain:deps.bzl", "bazel_toolchain_dependencies")
-
-bazel_toolchain_dependencies()
-
-load("@com_grail_bazel_toolchain//toolchain:rules.bzl", "llvm_toolchain")
-
-llvm_toolchain(
-    name = "llvm_toolchain",
-    llvm_version = "14.0.0",
-    strip_prefix = {"": "clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04"},
-    # In Docker, this ensures that we use the toolchain uses a pre-installed LLVM,
-    # which is required because llvm_toolchain does not support Docker using its
-    # introspection capabilities.
-    urls = {
-        "": [
-            "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz",
-        ],
-    },
-)
-
-load("@llvm_toolchain//:toolchains.bzl", "llvm_register_toolchains")
-
-llvm_register_toolchains()
-
-load("@com_google_xls//dependency_support:load_external.bzl", "load_external_repositories")
-
-load_external_repositories()
-
-load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
-
-grpc_deps()
-
-load("@com_google_xls//dependency_support:initialize_external.bzl", "initialize_external_repositories")
-
-initialize_external_repositories()
-
-# https://github.com/google/xls/blob/8dee07ff6374302b86cdd21b89df4c476c23288a/WORKSPACE
-# Loading the extra deps must be called after initialize_eternal_repositories or
-# the call to pip_install fails.
-load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
-
-grpc_extra_deps()
-
-#  ERROR: /usr/local/google/home/gshruthi/.cache/bazel/
-# _bazel_gshruthi/88459525e83498a4c011792c2bbba5c6/external/com_google_xls/xls/ir/
-# BUILD:808:10: no such package '@xls_pip_deps_markupsafe//': 
-# The repository '@xls_pip_deps_markupsafe' could not be resolved: 
-# Repository '@xls_pip_deps_markupsafe' is not defined and 
-# referenced by '@com_google_xls//xls/ir:render_specification_against_template'
-# https://github.com/google/xls/blob/main/WORKSPACE
-load("@xls_pip_deps//:requirements.bzl", xls_pip_install_deps = "install_deps")
-
-xls_pip_install_deps()
 
 # Install ABC
 http_archive(
@@ -196,7 +179,6 @@ new_git_repository(
     commit = "d572f4777349d43653b21d6c2fc63020ab326db2",
     remote = "https://github.com/google/benchmark.git",
 )
-
 
 
 # Install rules_rust for rust codegen
@@ -250,10 +232,10 @@ crate_repositories()
 # @xls_pip_deps installs rules_python and uses the system python, and for
 # whatever reason that means we can't use a hermetic python here. If you try,
 # you will see it fail to load numpy C-extensions.
-load("@rules_python//python:pip.bzl", "pip_install")
+# load("@rules_python//python:pip.bzl", "pip_install")
 
-pip_install(
-    name = "transpiler_pip_deps",
-    python_interpreter = "python3",
-    requirements = "//:requirements.txt",
-)
+# pip_install(
+#     name = "transpiler_pip_deps",
+#     python_interpreter = "python3",
+#     requirements = "//:requirements.txt",
+# )
