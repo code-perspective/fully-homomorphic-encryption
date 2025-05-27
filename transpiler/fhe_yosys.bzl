@@ -96,6 +96,8 @@ def _verilog_to_netlist_impl(ctx):
     verilog_ir_file = src[VerilogOutputInfo].verilog_ir_file.to_list()[0]
     library_name = src[VerilogInfo].library_name
     stem = src[VerilogInfo].stem
+    print("--------hello shruthi-------------")
+    print(ctx)
 
     name = stem + "_" + ctx.attr.encryption
     if stem != library_name:
@@ -104,6 +106,8 @@ def _verilog_to_netlist_impl(ctx):
     netlist_file = generated_files[0]
     netlist_analyzer_files = _generate_netlist_analysis(ctx, name, netlist_file)
     outputs = generated_files
+    print(generated_files)
+    print("--------hello shruthi-------------")
     return [
         DefaultInfo(files = depset(outputs + netlist_analyzer_files + src[DefaultInfo].files.to_list())),
         BooleanifiedIrOutputInfo(
@@ -256,6 +260,7 @@ def _generate_netlist(ctx, stem, verilog, entry):
     args.add("-T")  # Don't print footer
     args.add_all("-s", [script.path])  # command execution
 
+
     ctx.actions.run(
         inputs = [verilog, script],
         outputs = [netlist] + additional_files,
@@ -271,5 +276,6 @@ def _generate_netlist(ctx, stem, verilog, entry):
         },
         toolchain = None,
     )
+    print("--------generate_netlist shruthi-------------")
 
     return [netlist, script] + additional_files

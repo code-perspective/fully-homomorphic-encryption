@@ -64,7 +64,6 @@ cc_binary(
     deps = [
         ":simple_sum_tfhe",
         "//transpiler/data:tfhe_data",
-        "@com_google_xls//xls/common/logging",
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -77,7 +76,6 @@ cc_binary(
     deps = [
         ":simple_sum_interpreted_tfhe",
         "//transpiler/data:tfhe_data",
-        "@com_google_xls//xls/common/logging",
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -89,7 +87,6 @@ cc_binary(
     deps = [
         ":simple_sum_openfhe",
         "//transpiler/data:openfhe_data",
-        "@com_google_xls//xls/common/logging",
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -102,7 +99,6 @@ cc_binary(
     deps = [
         ":simple_sum_interpreted_openfhe",
         "//transpiler/data:openfhe_data",
-        "@com_google_xls//xls/common/logging",
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -114,7 +110,6 @@ cc_binary(
     deps = [
         ":simple_sum_cleartext",
         "//transpiler/data:cleartext_data",
-        "@com_google_xls//xls/common/logging",
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )
@@ -136,7 +131,6 @@ cc_binary(
     deps = [
         ":simple_sum_yosys_cleartext",
         "//transpiler/data:cleartext_data",
-        "@com_google_xls//xls/common/logging",
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )
@@ -158,7 +152,6 @@ cc_binary(
     deps = [
         ":simple_sum_yosys_interpreted_tfhe",
         "//transpiler/data:tfhe_data",
-        "@com_google_xls//xls/common/logging",
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -181,7 +174,7 @@ cc_binary(
     deps = [
         ":simple_sum_yosys_interpreted_openfhe",
         "//transpiler/data:openfhe_data",
-        "@com_google_xls//xls/common/logging",
+        "@com_google_absl//absl/log:check",
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
