@@ -139,14 +139,27 @@ http_archive(
 # git_repository is required because the git project uses submodules,
 # (see .gitmodules in the source project), and hence we have to rely
 # on init_submodules to get proper behavior
-new_git_repository(
+git_repository(
+    name = "cereal",
+    build_file = "//bazel:cereal.BUILD",
+    commit = "ebef1e929807629befafbb2918ea1a08c7194554",
+    remote = "https://github.com/USCiLab/cereal.git",
+)
+
+git_repository(
+    name = "rapidjson",
+    build_file = "//bazel:rapidjson.BUILD",
+    commit = "9bd618f545ab647e2c3bcbf2f1d87423d6edf800",
+    remote = "https://github.com/Tencent/rapidjson.git",
+)
+
+git_repository(
     name = "openfhe",
-    build_file = "//patches:openfhe.BUILD",
-    # v1.0.0, 2022-11-03
-    commit = "5fc1a84cad234ffdea547db03985d888ff943ad1",
-    init_submodules = True,
+    build_file = "//bazel:openfhe.BUILD",
+    # Currently v1.1.4, 2024-03-08
+    commit = "94fd76a1d965cfde13f2a540d78ce64146fc2700",
+    patches = ["//bazel:add_config_core_openfhe.patch"],
     remote = "https://github.com/openfheorg/openfhe-development.git",
-    shallow_since = "1667502783 +0200",
 )
 
 # Install ABC
