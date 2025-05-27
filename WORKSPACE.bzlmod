@@ -34,9 +34,9 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_foreign_cc",
-    sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
-    strip_prefix = "rules_foreign_cc-0.7.1",
-    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.7.1.tar.gz",
+    sha256 = "6041f1374ff32ba711564374ad8e007aef77f71561a7ce784123b9b4b88614fc",
+    strip_prefix = "rules_foreign_cc-0.8.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.8.0.tar.gz",
 )
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
@@ -119,9 +119,36 @@ load("@xls_pip_deps//:requirements.bzl", xls_pip_install_deps = "install_deps")
 xls_pip_install_deps()
 
 
+# Install ABC
+http_archive(
+    name = "abc",
+    build_file = "//patches:abc.BUILD",
+    sha256 = "7fa5a448a4309fb4d6cf856c3fe4cc4be46b09dd552a05d5cfacd75f8d9504ad",
+    strip_prefix = "abc-eb44a80bf2eb8723231e72bb095c97d1e4834d56",
+    urls = [
+        "https://github.com/berkeley-abc/abc/archive/eb44a80bf2eb8723231e72bb095c97d1e4834d56.zip",
+    ],
+)
 
+# Install Yosys. Using git rule because Yosys archive checksum keeps changing
+# and they can't figure out why see
+# https://github.com/YosysHQ/yosys/issues/3479
+new_git_repository(
+    name = "yosys",
+    build_file = "//patches:yosys.BUILD",
+    # Release v0.21
+    commit = "e6d2a900a979df59bee82a6293e467411a0bac7c",
+    remote = "https://github.com/YosysHQ/yosys.git",
+    shallow_since = "1662445410 +0200",
+)
 
-
+# Install google benchmark framework
+new_git_repository(
+    name = "com_google_benchmark",
+    build_file = "//patches:google_benchmark.BUILD",
+    commit = "d572f4777349d43653b21d6c2fc63020ab326db2",
+    remote = "https://github.com/google/benchmark.git",
+)
 
 
 # Install TFHE
@@ -160,37 +187,6 @@ git_repository(
     commit = "94fd76a1d965cfde13f2a540d78ce64146fc2700",
     patches = ["//bazel:add_config_core_openfhe.patch"],
     remote = "https://github.com/openfheorg/openfhe-development.git",
-)
-
-# Install ABC
-http_archive(
-    name = "abc",
-    build_file = "//patches:abc.BUILD",
-    sha256 = "7fa5a448a4309fb4d6cf856c3fe4cc4be46b09dd552a05d5cfacd75f8d9504ad",
-    strip_prefix = "abc-eb44a80bf2eb8723231e72bb095c97d1e4834d56",
-    urls = [
-        "https://github.com/berkeley-abc/abc/archive/eb44a80bf2eb8723231e72bb095c97d1e4834d56.zip",
-    ],
-)
-
-# Install Yosys. Using git rule because Yosys archive checksum keeps changing
-# and they can't figure out why see
-# https://github.com/YosysHQ/yosys/issues/3479
-new_git_repository(
-    name = "yosys",
-    build_file = "//patches:yosys.BUILD",
-    # Release v0.21
-    commit = "e6d2a900a979df59bee82a6293e467411a0bac7c",
-    remote = "https://github.com/YosysHQ/yosys.git",
-    shallow_since = "1662445410 +0200",
-)
-
-# Install google benchmark framework
-new_git_repository(
-    name = "com_google_benchmark",
-    build_file = "//patches:google_benchmark.BUILD",
-    commit = "d572f4777349d43653b21d6c2fc63020ab326db2",
-    remote = "https://github.com/google/benchmark.git",
 )
 
 

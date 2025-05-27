@@ -20,13 +20,8 @@
 #include "openfhe/binfhe/binfhecontext.h"
 #include "transpiler/data/openfhe_data.h"
 
-#if defined(USE_INTERPRETED_OPENFHE)
-#include "transpiler/examples/simple_sum/simple_sum_interpreted_openfhe.h"
-#elif defined(USE_YOSYS_INTERPRETED_OPENFHE)
-#include "transpiler/examples/simple_sum/simple_sum_yosys_interpreted_openfhe.h"
-#else
 #include "transpiler/examples/simple_sum/simple_sum_openfhe.h"
-#endif
+
 
 using namespace lbcrypto;
 using namespace std;

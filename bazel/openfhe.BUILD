@@ -77,4 +77,5 @@ cc_library(
     deps = [
         "@openfhe//:core",
     ],
+    alwayslink = 1,
 )

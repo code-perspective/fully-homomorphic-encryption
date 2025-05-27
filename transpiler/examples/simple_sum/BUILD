@@ -37,6 +37,7 @@ fhe_cc_library(
     encryption = "openfhe",
     num_opt_passes = 2,
     optimizer = "xls",
+    alwayslink = 1,
 )
 
 fhe_cc_library(
