@@ -187,7 +187,7 @@ cc_test(
         "@com_github_hlslibs_ac_types//:ac_int",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
         "@com_google_xls//xls/common/status:matchers",
     ],
 )
@@ -200,7 +200,7 @@ cc_test(
         "@com_github_hlslibs_ac_types//:ac_int",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
         "@com_google_xls//xls/common/status:matchers",
     ],
 )
@@ -213,7 +213,7 @@ cc_test(
         "@com_github_hlslibs_ac_types//:ac_int",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
         "@com_google_xls//xls/common/status:matchers",
     ],
 )

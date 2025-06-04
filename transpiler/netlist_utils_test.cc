@@ -43,8 +43,8 @@ using ::xls::netlist::rtl::AbstractModule;
 using ::xls::netlist::rtl::AbstractNetDef;
 using ::xls::netlist::rtl::AbstractNetlist;
 using ::xls::netlist::rtl::NetDeclKind;
-using ::xls::status_testing::IsOk;
-using ::xls::status_testing::IsOkAndHolds;
+using absl_testing::IsOk;
+using absl_testing::IsOkAndHolds;
 using ::xls::status_testing::StatusIs;
 
 constexpr absl::string_view kCells = R"lib(
@@ -273,7 +273,7 @@ endmodule
 
   absl::StatusOr<std::vector<std::vector<std::string>>> level_sorted =
       run_levelsort(netlist);
-  EXPECT_THAT(level_sorted, ::xls::status_testing::IsOk());
+  EXPECT_THAT(level_sorted, absl_testing::IsOk());
   std::vector<std::vector<std::string>> level_unwrapped = level_sorted.value();
   EXPECT_EQ(level_unwrapped.size(), 2);
   EXPECT_THAT(level_unwrapped[0], UnorderedElementsAre("_3_"));

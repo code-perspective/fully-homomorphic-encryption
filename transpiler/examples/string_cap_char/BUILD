@@ -25,7 +25,7 @@ gen_demos(
         ":string_cap_char_plaintext",
         "@com_google_absl//absl/base",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )
@@ -41,7 +41,7 @@ gen_demos(
         "string_cap_char_plaintext",
         "@com_google_absl//absl/base",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )
@@ -57,7 +57,7 @@ gen_demos(
         "string_cap_char_plaintext",
         "@com_google_absl//absl/base",
         "@com_google_absl//absl/container:fixed_array",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )

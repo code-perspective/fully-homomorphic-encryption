@@ -24,6 +24,12 @@ index 2896871ec..9900bebf6 100644
      deps = [
          ":status_builder",
          "//xls/common:source_location",
+@@ -153,4 +153,5 @@ cc_test(
+ cc_library(
+     name = "matchers",
+     testonly = True,
++    visibility = ["//visibility:public"],
+     srcs = ["matchers.cc"],
 diff --git a/xls/contrib/xlscc/BUILD b/xls/contrib/xlscc/BUILD
 index 77ef2c9b9..4429151f1 100644
 --- a/xls/contrib/xlscc/BUILD
@@ -81,6 +87,15 @@ index 2b0310cba..5f46b0098 100644
      deps = [
          ":cell_library",
          "//xls/common:bits_util",
+@@ -68,7 +68,7 @@ cc_library(
+     hdrs = [
+         "interpreter.h",
+     ],
+-    visibility = ["//xls:xls_users"],
++    visibility = ["//visibility:public"],
+     deps = [
+         ":cell_library",
+         ":function_parser",
 @@ -116,7 +116,7 @@ cc_library(
      name = "netlist_parser",
      srcs = ["netlist_parser.cc"],
@@ -141,6 +156,14 @@ diff --git a/xls/public/BUILD b/xls/public/BUILD
 index bc82567f2..551983785 100644
 --- a/xls/public/BUILD
 +++ b/xls/public/BUILD
+@@ -84,6 +84,7 @@ cc_library(
+ cc_library(
+     name = "function_builder",
+     hdrs = ["function_builder.h"],
++    visibility = ["//visibility:public"],
+     deps = [
+         "//xls/ir:function_builder",
+         "//xls/ir:source_location",
 @@ -111,6 +111,7 @@ cc_library(
  cc_library(
      name = "value",

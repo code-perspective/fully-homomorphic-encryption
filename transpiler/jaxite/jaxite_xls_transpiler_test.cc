@@ -21,7 +21,7 @@ namespace {
 
 using xls::Function;
 using xls::Package;
-using ::xls::status_testing::StatusIs;
+using absl_testing::StatusIs;
 
 constexpr char kTestFunction[] = "test_fn";
 constexpr char kTestPackage[] = "test_package";

@@ -89,7 +89,7 @@ py_library(
     srcs = ["add_one_lib.py"],
     deps = [
         ":add_one_fhe_py_lib",
-        "@transpiler_pip_deps//pypi__jaxite",
+        "@transpiler_pip_deps//jaxite",
     ],
 )
 
@@ -99,8 +99,8 @@ py_binary(
     deps = [
         ":add_one_fhe_py_lib",
         ":add_one_py_lib",
-        "@com_google_absl_py//absl:app",
-        "@transpiler_pip_deps//pypi__jaxite",
+        "@transpiler_pip_deps//absl_py",
+        "@transpiler_pip_deps//jaxite",
     ],
 )
 
@@ -120,7 +120,6 @@ py_test(
         ":add_one_fhe_py_lib_lut2",
         ":add_one_fhe_py_lib_lut3",
         ":add_one_py_lib",
-        "@com_google_absl_py//absl/testing:absltest",
-        "@com_google_absl_py//absl/testing:parameterized",
+        "@transpiler_pip_deps//absl_py",
     ],
 )

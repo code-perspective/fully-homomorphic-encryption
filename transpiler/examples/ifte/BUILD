@@ -162,7 +162,7 @@ cc_binary(
         ":ifte_xls_cleartext",
         "//transpiler/data:cleartext_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )
@@ -175,7 +175,7 @@ cc_binary(
         ":ifte_netlist_cleartext_interpreted",
         "//transpiler/data:cleartext_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )
@@ -187,7 +187,7 @@ cc_binary(
         ":ifte_xls_tfhe",
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -201,7 +201,7 @@ cc_binary(
         ":ifte_netlist_tfhe_interpreted",
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -215,7 +215,7 @@ cc_binary(
         ":ifte_netlist_openfhe_interpreted",
         "//transpiler/data:openfhe_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],

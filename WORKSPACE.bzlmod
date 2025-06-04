@@ -173,27 +173,6 @@ http_archive(
     ],
 )
 
-# Install Yosys. Using git rule because Yosys archive checksum keeps changing
-# and they can't figure out why see
-# https://github.com/YosysHQ/yosys/issues/3479
-new_git_repository(
-    name = "yosys",
-    build_file = "//patches:yosys.BUILD",
-    # Release v0.21
-    commit = "e6d2a900a979df59bee82a6293e467411a0bac7c",
-    remote = "https://github.com/YosysHQ/yosys.git",
-    shallow_since = "1662445410 +0200",
-)
-
-# Install google benchmark framework
-new_git_repository(
-    name = "com_google_benchmark",
-    build_file = "//patches:google_benchmark.BUILD",
-    commit = "d572f4777349d43653b21d6c2fc63020ab326db2",
-    remote = "https://github.com/google/benchmark.git",
-)
-
-
 # Install rules_rust for rust codegen
 http_archive(
     name = "rules_rust",
@@ -245,10 +224,63 @@ crate_repositories()
 # @xls_pip_deps installs rules_python and uses the system python, and for
 # whatever reason that means we can't use a hermetic python here. If you try,
 # you will see it fail to load numpy C-extensions.
-# load("@rules_python//python:pip.bzl", "pip_install")
+load("@rules_python//python:repositories.bzl", "py_repositories")
 
-# pip_install(
-#     name = "transpiler_pip_deps",
-#     python_interpreter = "python3",
-#     requirements = "//:requirements.txt",
-# )
+py_repositories()
+
+load("@rules_python//python:pip.bzl", "pip_parse")
+
+pip_parse(
+    name = "transpiler_pip_deps",
+    requirements_lock = "//:requirements.txt",
+)
+
+load("@transpiler_pip_deps//:requirements.bzl", "install_deps")
+
+install_deps()
+
+# install dependencies for yosys/ABC circuit optimizers
+http_archive(
+    name = "rules_hdl",
+    # Commit 2024-02-14, after merging our patch to fix MacOS builds
+    strip_prefix = "bazel_rules_hdl-9f292fca574e6406a69eeb91daad18a4c8ac2252",
+    url = "https://github.com/hdl/bazel_rules_hdl/archive/9f292fca574e6406a69eeb91daad18a4c8ac2252.tar.gz",
+)
+
+load("@rules_hdl//dependency_support/at_clifford_yosys:at_clifford_yosys.bzl", "at_clifford_yosys")
+load("@rules_hdl//dependency_support/edu_berkeley_abc:edu_berkeley_abc.bzl", "edu_berkeley_abc")
+load("@rules_hdl//dependency_support/net_invisible_island_ncurses:net_invisible_island_ncurses.bzl", "net_invisible_island_ncurses")
+load("@rules_hdl//dependency_support/net_zlib:net_zlib.bzl", "net_zlib")
+load("@rules_hdl//dependency_support/org_gnu_gnulib:org_gnu_gnulib.bzl", "org_gnu_gnulib")
+load("@rules_hdl//dependency_support/org_gnu_readline:org_gnu_readline.bzl", "org_gnu_readline")
+load("@rules_hdl//dependency_support/org_sourceware_libffi:org_sourceware_libffi.bzl", "org_sourceware_libffi")
+load("@rules_hdl//dependency_support/tk_tcl:tk_tcl.bzl", "tk_tcl")
+
+net_invisible_island_ncurses()
+
+org_gnu_readline()
+
+edu_berkeley_abc()
+
+tk_tcl()
+
+net_zlib()
+
+org_gnu_gnulib()
+
+org_sourceware_libffi()
+
+at_clifford_yosys()
+
+http_archive(
+    name = "com_google_googletest",
+    integrity = "sha256-dFxVQVZgBEYQ9/zTr3pkINXeFqfbuev+LhMSdWdiMr4=",
+    strip_prefix = "googletest-52eb8108c5bdec04579160ae17225d66034bd723",
+    urls = [
+        "https://github.com/google/googletest/archive/52eb8108c5bdec04579160ae17225d66034bd723.tar.gz" # 1.17.0
+    ],
+)
+
+load("@com_google_googletest//:googletest_deps.bzl", "googletest_deps")
+
+googletest_deps()
