@@ -289,7 +289,7 @@ cc_binary(
         "//transpiler/data:cleartext_data",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )
@@ -307,7 +307,7 @@ cc_test(
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
         "@com_google_benchmark//:benchmark_main",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:matchers",
         "@com_google_xls//xls/common/status:status_macros",
     ],
@@ -335,7 +335,7 @@ cc_binary(
         "//transpiler/data:cleartext_data",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
     ],
 )
@@ -351,7 +351,7 @@ cc_binary(
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -369,7 +369,7 @@ cc_binary(
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -387,7 +387,7 @@ cc_binary(
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -404,7 +404,7 @@ cc_binary(
         "//transpiler/data:openfhe_data",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -422,7 +422,7 @@ cc_binary(
         "//transpiler/data:openfhe_data",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -440,7 +440,7 @@ cc_binary(
         "//transpiler/data:openfhe_data",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/time",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -483,8 +483,8 @@ py_binary(
     main = "kernel_gaussian_blur.py",
     deps = [
         ":kernel_gaussian_blur_fhe_py_lib",
-        "@com_google_absl_py//absl/testing:absltest",
-        "@transpiler_pip_deps//pypi__jaxite",
+        "@transpiler_pip_deps//absl_py",
+        "@transpiler_pip_deps//jaxite",
     ],
 )
 

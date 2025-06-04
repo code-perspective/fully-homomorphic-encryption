@@ -25,7 +25,7 @@ cc_binary(
         ":hangman_client_lib",
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -107,7 +107,7 @@ py_binary(
     main = "hangman.py",
     deps = [
         ":hangman_fhe_py_lib",
-        "@com_google_absl_py//absl:app",
-        "@transpiler_pip_deps//pypi__jaxite",
+        "@transpiler_pip_deps//absl_py",
+        "@transpiler_pip_deps//jaxite",
     ],
 )

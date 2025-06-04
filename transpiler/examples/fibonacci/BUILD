@@ -99,7 +99,7 @@ cc_binary(
         ":fibonacci_tfhe",
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -113,7 +113,7 @@ cc_binary(
         ":fibonacci_interpreted_tfhe",
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -126,7 +126,7 @@ cc_binary(
         ":fibonacci_openfhe",
         "//transpiler/data:openfhe_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -140,7 +140,7 @@ cc_binary(
         ":fibonacci_interpreted_openfhe",
         "//transpiler/data:openfhe_data",
         "@com_google_absl//absl/base",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -153,7 +153,7 @@ cc_binary(
         ":fibonacci_sequence_tfhe",
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/strings:str_format",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -167,7 +167,7 @@ cc_binary(
         ":fibonacci_sequence_interpreted_tfhe",
         "//transpiler/data:tfhe_data",
         "@com_google_absl//absl/strings:str_format",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -181,7 +181,7 @@ cc_binary(
         "//transpiler/data:cleartext_data",
         "@com_google_absl//absl/container:fixed_array",
         "@com_google_absl//absl/strings:str_format",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@tfhe//:libtfhe",
     ],
@@ -194,7 +194,7 @@ cc_binary(
         ":fibonacci_sequence_openfhe",
         "//transpiler/data:openfhe_data",
         "@com_google_absl//absl/strings:str_format",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -208,7 +208,7 @@ cc_binary(
         ":fibonacci_sequence_interpreted_openfhe",
         "//transpiler/data:openfhe_data",
         "@com_google_absl//absl/strings:str_format",
-        "@com_google_xls//xls/common/logging",
+        
         "@com_google_xls//xls/common/status:status_macros",
         "@openfhe//:binfhe",
     ],
@@ -305,8 +305,8 @@ py_binary(
     main = "fibonacci.py",
     deps = [
         ":fibonacci_fhe_py_lib",
-        "@com_google_absl_py//absl:app",
-        "@transpiler_pip_deps//pypi__jaxite",
+        "@transpiler_pip_deps//absl_py",
+        "@transpiler_pip_deps//jaxite",
     ],
 )
 

@@ -161,7 +161,7 @@ def py_fhe_bool_ir_library(name, py_file_name, src, cell_library = None, paralle
         srcs = [":" + transpiled_source],
         tags = tags,
         deps = [
-            "@transpiler_pip_deps//pypi__jaxite",
+            "@transpiler_pip_deps//jaxite",
         ],
         **kwargs
     )
