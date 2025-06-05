@@ -17,6 +17,7 @@
 #include <string>
 #include <utility>
 
+#include "absl/log/check.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/ascii.h"
@@ -28,7 +29,6 @@
 #include "google/protobuf/text_format.h"
 #include "transpiler/common_transpiler.h"
 #include "transpiler/pipeline_enums.h"
-#include "xls/common/logging/logging.h"
 #include "xls/common/status/status_macros.h"
 
 namespace fully_homomorphic_encryption {
@@ -115,7 +115,7 @@ $3 {
 
   // Serialize the metadata, removing the trailing null.
   std::string metadata_text;
-  XLS_CHECK(
+  CHECK(
       google::protobuf::TextFormat::PrintToString(metadata, &metadata_text));
 
   std::string runner_prefix;

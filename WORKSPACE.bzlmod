@@ -7,6 +7,7 @@ load(
     "new_git_repository",
 )
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
 
 # provides the `license` rule, which is required because gentbl_rule implicitly
 # depends upon the target '//:license'.
@@ -31,12 +32,11 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
 bazel_skylib_workspace()
 
-# Install TFHE
 http_archive(
     name = "rules_foreign_cc",
-    sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
-    strip_prefix = "rules_foreign_cc-0.7.1",
-    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.7.1.tar.gz",
+    sha256 = "6041f1374ff32ba711564374ad8e007aef77f71561a7ce784123b9b4b88614fc",
+    strip_prefix = "rules_foreign_cc-0.8.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.8.0.tar.gz",
 )
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
@@ -51,86 +51,73 @@ http_archive(
     url = "https://github.com/nlohmann/json/archive/refs/tags/v3.11.2.tar.gz",
 )
 
-http_archive(
-    name = "tfhe",
-    build_file = "//patches:tfhe.BUILD",
-    sha256 = "7ad88b70b389bfdb871488a90372b0cecd9ba731183ba02c3cd0ce86c9adcc93",
-    strip_prefix = "tfhe-a085efe91314f994285fcb06ab8bdae3d55e4505",
-    url = "https://github.com/tfhe/tfhe/archive/a085efe91314f994285fcb06ab8bdae3d55e4505.tar.gz",
-)
 
-# Install OpenFHE
-# git_repository is required because the git project uses submodules,
-# (see .gitmodules in the source project), and hence we have to rely
-# on init_submodules to get proper behavior
-new_git_repository(
-    name = "openfhe",
-    build_file = "//patches:openfhe.BUILD",
-    # v1.0.0, 2022-11-03
-    commit = "5fc1a84cad234ffdea547db03985d888ff943ad1",
-    init_submodules = True,
-    remote = "https://github.com/openfheorg/openfhe-development.git",
-    shallow_since = "1667502783 +0200",
-)
+
 
 # Install XLS and its transitive dependencies.
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "rules_python",
+    sha256 = "ca77768989a7f311186a29747e3e95c936a41dffac779aff6b443db22290d913",
+    strip_prefix = "rules_python-0.36.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.36.0/rules_python-0.36.0.tar.gz",
+)
+### Protobuf setup section
+# Note that protobuf setup is very complicated and needs its own carve-out in WORKSPACE.
+PROTOBUF_VERSION = "30.1"
+PROTOBUF_HASH = "008a11cc56f9b96679b4c285fd05f46d317d685be3ab524b2a310be0fbad987e"
+http_archive(
+    name = "com_google_protobuf",
+    sha256 = PROTOBUF_HASH,
+    strip_prefix = "protobuf-" + PROTOBUF_VERSION,
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-{0}.tar.gz".format(PROTOBUF_VERSION)],
+)
+
+# note that the following line is what is minimally required from protobuf for the java rules
+# consider using the protobuf_deps() public API from @com_google_protobuf//:protobuf_deps.bzl
+load("@com_google_protobuf//bazel/private:proto_bazel_features.bzl", "proto_bazel_features")  # buildifier: disable=bzl-visibility
+
+proto_bazel_features(name = "proto_bazel_features")
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
 http_archive(
     name = "com_google_xls",
-    sha256 = "da8807270d854701f51b7171eed3a70b2f64e5a39ad4ee940eec0ea6eda33e77",
-    strip_prefix = "xls-8dee07ff6374302b86cdd21b89df4c476c23288a",
-    url = "https://github.com/google/xls/archive/8dee07ff6374302b86cdd21b89df4c476c23288a.tar.gz",
+    sha256 = "d671f2f6622517f04b42e7ab8f6bc42b5ecc37f0ae25473f0335d23f829f7a9f",
+    strip_prefix = "xls-1f56aafdb5fd0a4310f7239cf54f1e5815d319f7",
+    url = "https://github.com/google/xls/archive/1f56aafdb5fd0a4310f7239cf54f1e5815d319f7.tar.gz",
+    patch_args = ["-p1"],
+    patches = ["//patches:xls.diff", "//patches:xls_visibility.diff", "//patches:xls_repo.diff"],
 )
-
-# Used by xlscc.
-http_archive(
-    name = "com_github_hlslibs_ac_types",
-    build_file = "@com_google_xls//dependency_support/com_github_hlslibs_ac_types:bundled.BUILD.bazel",
-    sha256 = "7ab5e2ee4c675ef6895fdd816c32349b3070dc8211b7d412242c66d0c6e8edca",
-    strip_prefix = "ac_types-57d89634cb5034a241754f8f5347803213dabfca",
-    urls = ["https://github.com/hlslibs/ac_types/archive/57d89634cb5034a241754f8f5347803213dabfca.tar.gz"],
-)
-
-# Toolchain to install LLVM, a requirements for XLS
-http_archive(
-    name = "com_grail_bazel_toolchain",
-    sha256 = "06e1421091f153029c070f1ae364f8cb5a61dab20ede97a844a0f7bfcec632a4",
-    strip_prefix = "bazel-toolchain-0.8",
-    urls = [
-        "https://github.com/grailbio/bazel-toolchain/archive/refs/tags/0.8.zip",
-    ],
-)
-
-load("@com_grail_bazel_toolchain//toolchain:deps.bzl", "bazel_toolchain_dependencies")
-
-bazel_toolchain_dependencies()
-
-load("@com_grail_bazel_toolchain//toolchain:rules.bzl", "llvm_toolchain")
-
-llvm_toolchain(
-    name = "llvm_toolchain",
-    llvm_version = "14.0.0",
-    strip_prefix = {"": "clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04"},
-    # In Docker, this ensures that we use the toolchain uses a pre-installed LLVM,
-    # which is required because llvm_toolchain does not support Docker using its
-    # introspection capabilities.
-    urls = {
-        "": [
-            "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz",
-        ],
-    },
-)
-
-load("@llvm_toolchain//:toolchains.bzl", "llvm_register_toolchains")
-
-llvm_register_toolchains()
 
 load("@com_google_xls//dependency_support:load_external.bzl", "load_external_repositories")
 
 load_external_repositories()
 
-load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+load(
+  "@rules_python//python:repositories.bzl",
+  "py_repositories",
+  "python_register_toolchains",
+)
 
-grpc_deps()
+# Must be called before using anything from rules_python.
+# https://github.com/bazelbuild/rules_python/issues/1560#issuecomment-1815118394
+py_repositories()
+
+python_register_toolchains(
+    name = "project_python",
+    python_version = "3.11",
+)
+
+load("@com_google_xls//dependency_support:initialize_external.bzl", "initialize_external_repositories")
+
+initialize_external_repositories()
+
+load("@xls_pip_deps//:requirements.bzl", xls_pip_install_deps = "install_deps")
+
+xls_pip_install_deps()
+
 
 # Install ABC
 http_archive(
@@ -163,9 +150,45 @@ new_git_repository(
     remote = "https://github.com/google/benchmark.git",
 )
 
-load("@com_google_xls//dependency_support:initialize_external.bzl", "initialize_external_repositories")
 
-initialize_external_repositories()
+# Install TFHE
+
+http_archive(
+    name = "tfhe",
+    build_file = "//patches:tfhe.BUILD",
+    sha256 = "7ad88b70b389bfdb871488a90372b0cecd9ba731183ba02c3cd0ce86c9adcc93",
+    strip_prefix = "tfhe-a085efe91314f994285fcb06ab8bdae3d55e4505",
+    url = "https://github.com/tfhe/tfhe/archive/a085efe91314f994285fcb06ab8bdae3d55e4505.tar.gz",
+)
+
+
+# Install OpenFHE
+# git_repository is required because the git project uses submodules,
+# (see .gitmodules in the source project), and hence we have to rely
+# on init_submodules to get proper behavior
+git_repository(
+    name = "cereal",
+    build_file = "//bazel:cereal.BUILD",
+    commit = "ebef1e929807629befafbb2918ea1a08c7194554",
+    remote = "https://github.com/USCiLab/cereal.git",
+)
+
+git_repository(
+    name = "rapidjson",
+    build_file = "//bazel:rapidjson.BUILD",
+    commit = "9bd618f545ab647e2c3bcbf2f1d87423d6edf800",
+    remote = "https://github.com/Tencent/rapidjson.git",
+)
+
+git_repository(
+    name = "openfhe",
+    build_file = "//bazel:openfhe.BUILD",
+    # Currently v1.1.4, 2024-03-08
+    commit = "94fd76a1d965cfde13f2a540d78ce64146fc2700",
+    patches = ["//bazel:add_config_core_openfhe.patch"],
+    remote = "https://github.com/openfheorg/openfhe-development.git",
+)
+
 
 # Install rules_rust for rust codegen
 http_archive(
@@ -218,10 +241,10 @@ crate_repositories()
 # @xls_pip_deps installs rules_python and uses the system python, and for
 # whatever reason that means we can't use a hermetic python here. If you try,
 # you will see it fail to load numpy C-extensions.
-load("@rules_python//python:pip.bzl", "pip_install")
+# load("@rules_python//python:pip.bzl", "pip_install")
 
-pip_install(
-    name = "transpiler_pip_deps",
-    python_interpreter = "python3",
-    requirements = "//:requirements.txt",
-)
+# pip_install(
+#     name = "transpiler_pip_deps",
+#     python_interpreter = "python3",
+#     requirements = "//:requirements.txt",
+# )

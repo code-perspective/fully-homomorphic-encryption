@@ -15,7 +15,6 @@
 #include "tfhe/tfhe.h"
 #include "tfhe/tfhe_io.h"
 #include "transpiler/data/cleartext_value.h"
-#include "xls/common/logging/logging.h"
 #include "xls/common/status/status_macros.h"
 
 struct TFheGateBootstrappingParameterSetDeleter {
@@ -123,7 +122,7 @@ template <int Width, bool Signed>
 inline void TfheEncryptInteger(const ac_int<Width, Signed>& value,
                                const TFheGateBootstrappingSecretKeySet* key,
                                absl::Span<LweSample> out) {
-  XLS_CHECK_EQ(Width, out.size());
+  CHECK(Width == out.size());
   for (int j = 0; j < Width; ++j) {
     bootsSymEncrypt(&out[j], value.template slc<1>(j), key);
   }
@@ -133,7 +132,7 @@ template <int Width, bool Signed>
 inline ac_int<Width, Signed> TfheDecryptInteger(
     absl::Span<const LweSample> ciphertext,
     const TFheGateBootstrappingSecretKeySet* key) {
-  XLS_CHECK_EQ(Width, ciphertext.size());
+  CHECK(Width == ciphertext.size());
   ac_int<Width, Signed> val = 0;
   for (int j = 0; j < Width; j++) {
     val.set_slc(j, ac_int<1, false>(bootsSymDecrypt(&ciphertext[j], key) > 0));
